@@ -187,6 +187,6 @@ export interface Statistics {
     totalCribsUsed: number; // Total physical cribs (Occupied by Patient + Companion)
     totalHospitalized: number; // occupiedBeds + occupiedCribs
     blockedBeds: number;
-    serviceCapacity: number; // 18 - blocked
-    availableCapacity: number;
+    serviceCapacity: number; // Physical capacity excluding blocked beds
+    availableCapacity: number; // Service capacity minus occupied beds/cribs
 }

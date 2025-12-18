@@ -14,8 +14,8 @@ export interface CensusStatistics {
     totalCribsUsed: number;       // Physical crib count
     totalHospitalized: number;    // Total patients
     blockedBeds: number;          // Blocked beds
-    serviceCapacity: number;      // Hospital capacity
-    availableCapacity: number;    // Capacity minus blocked
+    serviceCapacity: number;      // Hospital capacity excluding blocked beds
+    availableCapacity: number;    // Service capacity minus hospitalized patients
 }
 
 /**
@@ -83,7 +83,7 @@ export const calculateStats = (beds: Record<string, PatientData>): CensusStatist
         totalCribsUsed: resourceCribs,
         totalHospitalized: occupiedBeds + occupiedCribs,
         blockedBeds,
-        serviceCapacity: HOSPITAL_CAPACITY,
-        availableCapacity: HOSPITAL_CAPACITY - blockedBeds,
+        serviceCapacity: HOSPITAL_CAPACITY - blockedBeds,
+        availableCapacity: (HOSPITAL_CAPACITY - blockedBeds) - (occupiedBeds + occupiedCribs),
     };
 };
