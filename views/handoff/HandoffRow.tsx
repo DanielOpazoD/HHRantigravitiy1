@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { PatientData, PatientStatus } from '../../types';
 import { Baby, AlertCircle, Clock } from 'lucide-react';
 import clsx from 'clsx';
@@ -43,6 +43,22 @@ export const HandoffRow: React.FC<HandoffRowProps> = ({
     isSubRow = false,
     onNoteChange
 }) => {
+    const noteRef = useRef<HTMLTextAreaElement | null>(null);
+
+    useEffect(() => {
+        if (noteRef.current) {
+            noteRef.current.style.height = 'auto';
+            noteRef.current.style.height = `${noteRef.current.scrollHeight}px`;
+        }
+    }, [patient.handoffNote]);
+
+    const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const textarea = e.target;
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+        onNoteChange(textarea.value);
+    };
+
     // If bed is blocked (and not a sub-row), show blocked status
     if (!isSubRow && patient.isBlocked) {
         return (
@@ -146,10 +162,11 @@ export const HandoffRow: React.FC<HandoffRowProps> = ({
             {/* Observaciones / Evolución */}
             <td className="p-2 w-full min-w-[300px] align-top">
                 <textarea
-                    className="w-full h-full min-h-[80px] p-2 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-medical-500 focus:outline-none resize-y bg-yellow-50/30"
+                    ref={noteRef}
+                    className="w-full h-full min-h-[80px] p-2 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-medical-500 focus:outline-none resize-none overflow-hidden bg-yellow-50/30"
                     placeholder="Escriba la evolución..."
                     value={patient.handoffNote || ''}
-                    onChange={(e) => onNoteChange(e.target.value)}
+                    onChange={handleNoteChange}
                 />
             </td>
         </tr>

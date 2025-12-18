@@ -35,7 +35,7 @@ export const generateShiftReport = async (record: DailyRecord) => {
       Estadísticas Generales:
       - Total Pacientes: ${stats.totalHospitalized}
       - Camas Bloqueadas: ${stats.blockedBeds}
-      - Disponibilidad: ${stats.serviceCapacity - stats.totalHospitalized - stats.blockedBeds} camas libres.
+      - Disponibilidad: ${stats.availableCapacity} camas libres.
 
       Detalle de Pacientes (JSON simplificado):
       ${JSON.stringify(occupiedData)}

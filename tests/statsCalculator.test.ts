@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { calculateStats, CensusStatistics } from '../services/calculations/statsCalculator';
+import { HOSPITAL_CAPACITY } from '../constants';
 import { PatientData, PatientStatus, Specialty } from '../types';
 
 // Helper to create a minimal patient
@@ -129,7 +130,20 @@ describe('statsCalculator', () => {
             const stats = calculateStats(beds);
 
             expect(stats.blockedBeds).toBe(2);
-            expect(stats.availableCapacity).toBe(stats.serviceCapacity - 2);
+            expect(stats.serviceCapacity).toBe(HOSPITAL_CAPACITY - 2);
+            expect(stats.availableCapacity).toBe(stats.serviceCapacity);
+        });
+
+        it('should exclude blocked beds from capacity and subtract occupied beds from availability', () => {
+            const beds: Record<string, PatientData> = {
+                'R1': createPatient({ bedId: 'R1', isBlocked: true }),
+                'R2': createPatient({ bedId: 'R2', patientName: 'Paciente 1' }),
+            };
+
+            const stats = calculateStats(beds);
+
+            expect(stats.serviceCapacity).toBe(HOSPITAL_CAPACITY - 1);
+            expect(stats.availableCapacity).toBe((HOSPITAL_CAPACITY - 1) - 1);
         });
 
     });

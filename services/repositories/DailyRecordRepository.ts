@@ -5,7 +5,7 @@
  * Supports demo mode with isolated storage.
  */
 
-import { DailyRecord, PatientData } from '../../types';
+import { CudyrScore, DailyRecord, PatientData } from '../../types';
 import { BEDS } from '../../constants';
 import {
     saveRecordLocal,
@@ -23,6 +23,34 @@ import {
     subscribeToRecord
 } from '../firestoreService';
 import { createEmptyPatient, clonePatient } from '../factories/patientFactory';
+
+const CUDYR_FIELDS: (keyof CudyrScore)[] = [
+    'changeClothes', 'mobilization', 'feeding', 'elimination', 'psychosocial', 'surveillance',
+    'vitalSigns', 'fluidBalance', 'oxygenTherapy', 'airway', 'proInterventions', 'skinCare',
+    'pharmacology', 'invasiveElements'
+];
+
+const resetCudyrScores = (patient: PatientData): PatientData => {
+    let updatedPatient: PatientData = patient;
+
+    if (patient.cudyr) {
+        const clearedScores = CUDYR_FIELDS.reduce((acc, key) => {
+            acc[key] = 0;
+            return acc;
+        }, {} as CudyrScore);
+
+        updatedPatient = { ...updatedPatient, cudyr: clearedScores };
+    }
+
+    if (patient.clinicalCrib) {
+        updatedPatient = {
+            ...updatedPatient,
+            clinicalCrib: resetCudyrScores(patient.clinicalCrib)
+        };
+    }
+
+    return updatedPatient;
+};
 
 // ============================================================================
 // Configuration
@@ -156,7 +184,8 @@ export const initializeDay = async (
             if (prevPatient) {
                 if (prevPatient.patientName || prevPatient.isBlocked) {
                     // Deep copy to prevent reference issues
-                    initialBeds[bed.id] = clonePatient(prevPatient);
+                    const clonedPatient = clonePatient(prevPatient);
+                    initialBeds[bed.id] = resetCudyrScores(clonedPatient);
                 } else {
                     // Preserve configuration even if empty
                     initialBeds[bed.id].bedMode = prevPatient.bedMode || initialBeds[bed.id].bedMode;

@@ -10,7 +10,7 @@ export const HandoffView: React.FC = () => {
     const { record, updatePatient, updateClinicalCrib } = useDailyRecordContext();
 
     if (!record) {
-        return <div className="p-8 text-center text-slate-500 font-sans">Seleccione una fecha para ver la Entrega de Turno.</div>;
+        return <div className="p-8 text-center text-slate-500 font-sans">Seleccione una fecha para ver la Entrega Turno Médicos.</div>;
     }
 
     const visibleBeds = useMemo(() => {

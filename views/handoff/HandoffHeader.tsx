@@ -7,7 +7,7 @@ export const HandoffHeader: React.FC = () => {
             <div>
                 <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                     <MessageSquare className="text-medical-600" />
-                    Entrega de Turno
+                    Entrega Turno Médicos
                 </h2>
                 <p className="text-sm text-slate-500">Registro de evolución y novedades clínicas por paciente.</p>
             </div>
